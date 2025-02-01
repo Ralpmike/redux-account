@@ -1,3 +1,6 @@
+import { connect } from "react-redux";
+
+// old to subscribe to the redux store using the connect API
 function formatCurrency(value) {
   return new Intl.NumberFormat("en", {
     style: "currency",
@@ -5,8 +8,14 @@ function formatCurrency(value) {
   }).format(value);
 }
 
-function BalanceDisplay() {
-  return <div className="balance">{formatCurrency(123456)}</div>;
+function BalanceDisplay({ balance }) {
+  return <div className="balance">{formatCurrency(balance)}</div>;
 }
 
-export default BalanceDisplay;
+function mapStateToProps(store) {
+  return {
+    balance: store.account.balance,
+  };
+}
+
+export default connect(mapStateToProps)(BalanceDisplay);
