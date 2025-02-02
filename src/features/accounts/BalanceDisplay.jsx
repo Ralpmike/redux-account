@@ -8,6 +8,7 @@ function formatCurrency(value) {
   }).format(value);
 }
 
+// eslint-disable-next-line react/prop-types
 function BalanceDisplay({ balance }) {
   return <div className="balance">{formatCurrency(balance)}</div>;
 }

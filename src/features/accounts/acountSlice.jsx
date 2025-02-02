@@ -2,6 +2,7 @@ const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
+  isLoading: false,
 };
 
 export default function accountReducer(state = initialStateAccount, action) {
@@ -10,6 +11,7 @@ export default function accountReducer(state = initialStateAccount, action) {
       return {
         ...state,
         balance: state.balance + action.payload,
+        isLoading: false,
       };
     case "account/withdraw":
       return {
@@ -24,6 +26,11 @@ export default function accountReducer(state = initialStateAccount, action) {
         loan: action.payload.amount,
         loanPurpose: action.payload.purpose,
         balance: state.balance + action.payload.amount,
+      };
+    case "account/currencyConverting":
+      return {
+        ...state,
+        isLoading: true,
       };
 
     case "account/payLoan":
@@ -40,8 +47,34 @@ export default function accountReducer(state = initialStateAccount, action) {
 
 // Action creators
 
-export function deposit(amount) {
-  return { type: "account/deposit", payload: amount };
+export function deposit(amount, currency) {
+  if (currency === "USD") return { type: "account/deposit", payload: amount };
+
+  // eslint-disable-next-line no-unused-vars
+  return async function (dispatch, getState) {
+    // Api call
+    dispatch({ type: "account/currencyConverting" });
+    // fetch(`https://api.frankfurter.dev/v1/latest?base=${currency}&symbols=USD`)
+    //   .then((resp) => resp.json())
+    //   .then((data) => {
+    //     const convertedAmount = (amount * data.rates["USD"]).toFixed(2);
+    //     console.log(convertedAmount);
+
+    //     return dispatch({ type: "account/deposit", payload: convertedAmount });
+    //     alert(`${amount} ${from} = ${convertedAmount} ${to}`);
+    //   });
+    const resp = await fetch(
+      `https://api.frankfurter.app/latest?amount=${amount}?&from=${currency}&to=USD`
+    );
+    const data = await resp.json();
+    console.log(data);
+
+    const convertedAmount = data.rates.USD;
+
+    // return action
+
+    dispatch({ type: "account/deposit", payload: convertedAmount });
+  };
 }
 
 export function withdraw(amount) {
