@@ -1,4 +1,3 @@
-// import { createStore } from "redux";
 import { combineReducers, legacy_createStore as createStore } from "redux";
 
 const initialStateCustomer = {
@@ -82,8 +81,6 @@ const store = createStore(rootReducer);
 //     purpose: "pay rent",
 //   },
 // });
-
-// console.log(store.getState());
 
 // store.dispatch({ type: "account/payLoan" });
 // console.log(store.getState());
